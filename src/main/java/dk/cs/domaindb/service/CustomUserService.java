@@ -1,0 +1,43 @@
+package dk.cs.domaindb.service;
+
+//import nl.wessel.juice.DTO.Customer.CustomerDto;
+//import nl.wessel.juice.Model.Authority;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
+
+@Service
+public class CustomUserService implements UserDetailsService {
+    private final UserService userService;
+
+    @Autowired
+    public CustomUserService(UserService userService) {
+        this.userService = userService;
+    }
+
+    //    this method returns a new User as Customer if in controller layer a Customer is picked over a Publisher
+    @Override
+    public UserDetails loadUserByUsername(String username) {
+        CustomerDto customerDto = customerService.getCustomer(username);
+        String password = customerDto.getPassword();
+        Set<Authority> authorities = customerDto.getAuthorities();
+        List<GrantedAuthority> grantedAuthorities = new ArrayList<>();
+        for (Authority authority : authorities) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(authority.getAuthority()));
+        }
+        return new User(username, password, grantedAuthorities);
+
+    }
+
+
+}
