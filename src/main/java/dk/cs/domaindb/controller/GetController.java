@@ -1,6 +1,7 @@
 package dk.cs.domaindb.controller;
 
 import dk.cs.domaindb.models.domain.Domain;
+import dk.cs.domaindb.models.domain.DomainDto;
 import dk.cs.domaindb.service.DomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -19,21 +20,20 @@ public class GetController {
         this.domainService = domainService;
     }
 
-
-
-
-//     this method returns all domains, with either ascending or descending sorting
-    @GetMapping("sort")
-    public List<Domain> sort(@RequestParam(name = "sortField", defaultValue = "") String sortField,
-                             @RequestParam(name = "sortOrder", defaultValue = "asc") String sortOrder) {
-        Sort.Direction direction = "desc".equalsIgnoreCase(sortOrder) ? Sort.Direction.DESC : Sort.Direction.ASC;
-        Sort sort = Sort.by(direction, sortField);
-        return domainService.sortDomains(sort);
+    @GetMapping("search/{email}")
+    public Domain findEmail(@PathVariable String email){
+        return domainService.findEmail(email);
     }
 
-    @GetMapping("search")
-    public Domain domainByName(@RequestParam(name = "name") String name){
-        return domainService.findDomainByName(name);
+
+    @GetMapping("search/{url}")
+    public Domain findDomain(@PathVariable String url){
+        return domainService.findDomain(url);
+    }
+
+    @GetMapping("search/batch")
+    public List<DomainDto> findDomains(@RequestBody List<Domain> domains){
+        return domainService.findDomains(domains);
     }
 
 
@@ -46,8 +46,18 @@ public class GetController {
 
     // this method accepts a list of domains and returns which domains are unique in that list.
     @GetMapping("unique")
-    public List<Domain> unique(List<Domain> domains){
+    public List<Domain> unique(@RequestBody List<Domain> domains){
         return domainService.findUniques(domains);
+    }
+
+
+    //     this method returns all domains, with either ascending or descending sorting
+    @GetMapping("sort/{field}/{order}")
+    public List<Domain> sort(@PathVariable String field,
+                             @PathVariable String order) {
+        Sort.Direction direction = "desc".equalsIgnoreCase(order) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Sort sort = Sort.by(direction, field);
+        return domainService.sortDomains(sort);
     }
 
 

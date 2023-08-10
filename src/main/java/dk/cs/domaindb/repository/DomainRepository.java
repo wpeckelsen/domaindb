@@ -12,5 +12,10 @@ public interface DomainRepository extends JpaRepository<Domain, Long> {
 //            "(:filterField = 'country' AND d.country = :filterValue)")
 //    List<Domain> findDomainByField(@Param("filterField") String filterField, @Param("filterValue") Object filterValue);
 
-    Domain findDomainByName(String name);
+
+
+    Domain findDomainByUrl(String url);
+
+    Domain findDomainByEmail(String email);
+    void deleteByUrl(String url);
 }

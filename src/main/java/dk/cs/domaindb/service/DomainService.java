@@ -25,7 +25,7 @@ public class DomainService {
         domain.setDomainID(dto.getDomainID());
         domain.setCountry(dto.getCountry());
         domain.setSource(dto.getSource());
-        domain.setName(dto.getName());
+        domain.setUrl(dto.getUrl());
         domain.setDomainRating(dto.getDomainRating());
         domain.setTraffic(dto.getTraffic());
         domain.setReferringDomains(dto.getReferringDomains());
@@ -43,7 +43,7 @@ public class DomainService {
         DomainDto dto = new DomainDto();
         dto.setCountry(domain.getCountry());
         dto.setSource(domain.getSource());
-        dto.setName(domain.getName());
+        dto.setUrl(domain.getUrl());
         dto.setDomainRating(domain.getDomainRating());
         dto.setTraffic(domain.getTraffic());
         dto.setReferringDomains(domain.getReferringDomains());
@@ -60,10 +60,28 @@ public class DomainService {
         return domainRepository.findAll(sort);
     }
 
-
-    public Domain findDomainByName(String name) {
-        return domainRepository.findDomainByName(name);
+    public Domain findDomain(String url) {
+        return domainRepository.findDomainByUrl(url);
     }
+
+    public Domain findEmail(String email){
+        return domainRepository.findDomainByEmail(email);
+    }
+
+    public List<DomainDto> findDomains(List<Domain> inputDomains) {
+        List<DomainDto> dtos = new ArrayList<>();
+        for (Domain domain : inputDomains) {
+            Domain foundDomain = domainRepository.findDomainByUrl(domain.getUrl());
+            if (foundDomain != null) {
+                DomainDto domainDto = domainDtoMaker(foundDomain);
+                if (domainDto != null) {
+                    dtos.add(domainDto);
+                }
+            }
+        }
+        return dtos;
+    }
+
 
     public DomainDto newDomain(Domain domain) {
         DomainDto newDomain = domainDtoMaker(domain);
@@ -71,13 +89,11 @@ public class DomainService {
     }
 
 
-
 //    user provides application with list of Domains, these are turned into DTOs and added into a new list
 //    of DomainDtos and this list of domainDtos is then returned
 //    useful for batch uploads
     public List<DomainDto> newDomains(List<Domain> domains) {
         List<DomainDto> domainDtoList = new ArrayList<>();
-
         for (Domain domain : domains) {
             DomainDto newDomain = domainDtoMaker(domain);
             domainDtoList.add(newDomain);
@@ -86,16 +102,29 @@ public class DomainService {
     }
 
 
+    public DomainDto update(String url, DomainDto dto){
+        Domain foundDomain = domainRepository.findDomainByUrl(url);
+        Domain updatedDomain = domainMaker(dto);
+
+        updatedDomain.setDomainID(foundDomain.getDomainID());
+        domainRepository.save(updatedDomain);
+        var returnedDomain = domainDtoMaker(updatedDomain);
+        return returnedDomain;
+    }
+
+
+    public void delete(String url){
+        domainRepository.deleteByUrl(url);
+    }
+
     public List<Domain> findDuplicates(List<Domain> newDomains) {
         List<Domain> duplicates = new ArrayList<>();
-
         for (Domain newDomain : newDomains) {
-            Domain existingDomain = domainRepository.findDomainByName(newDomain.getName());
+            Domain existingDomain = domainRepository.findDomainByUrl(newDomain.getUrl());
             if (existingDomain != null) {
                 duplicates.add(newDomain);
             }
         }
-
         return duplicates;
     }
 
@@ -103,12 +132,11 @@ public class DomainService {
         List<Domain> uniqueDomains = new ArrayList<>();
 
         for (Domain newDomain : newDomains) {
-            Domain existingDomain = domainRepository.findDomainByName(newDomain.getName());
+            Domain existingDomain = domainRepository.findDomainByUrl(newDomain.getUrl());
             if (existingDomain == null) {
                 uniqueDomains.add(newDomain);
             }
         }
-
         return uniqueDomains;
     }
 }

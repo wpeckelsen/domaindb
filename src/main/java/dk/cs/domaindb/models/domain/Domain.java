@@ -4,13 +4,7 @@ import dk.cs.domaindb.models.enums.Category;
 import dk.cs.domaindb.models.enums.Country;
 import dk.cs.domaindb.models.enums.Source;
 import dk.cs.domaindb.models.enums.Tag;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 
 @Entity
 public class Domain {
@@ -28,8 +22,8 @@ public class Domain {
     @Column(name = "source")
     private Source source;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "url")
+    private String url;
 
     @Column(name = "domainrating")
     private Integer domainRating;
@@ -88,12 +82,12 @@ public class Domain {
         this.source = source;
     }
 
-    public String getName() {
-        return name;
+    public String getUrl() {
+        return url;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUrl(String name) {
+        this.url = name;
     }
 
     public Integer getDomainRating() {

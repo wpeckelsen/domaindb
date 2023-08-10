@@ -10,7 +10,7 @@ public class DomainDto {
     private Long domainID;
     private Country country;
     private Source source;
-    private String name;
+    private String url;
     private Integer domainRating;
     private Integer traffic;
     private Integer referringDomains;
@@ -48,12 +48,12 @@ public class DomainDto {
         this.source = source;
     }
 
-    public String getName() {
-        return name;
+    public String getUrl() {
+        return url;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     public Integer getDomainRating() {
