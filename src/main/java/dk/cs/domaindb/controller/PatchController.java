@@ -16,9 +16,10 @@ public class PatchController {
     }
 
 
-    @PatchMapping("domain/{url}")
+    @PatchMapping("{url}")
     public ResponseEntity<DomainDto> update(@PathVariable String url,
                                             @RequestBody DomainDto dto){
+        domainService.update(url, dto);
         return ResponseEntity.noContent().build();
     }
 

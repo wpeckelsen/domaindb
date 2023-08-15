@@ -41,8 +41,13 @@ public class PostController {
     public ResponseEntity<List<Domain>> newDomains(@RequestBody List<Domain> domains){
         List<DomainDto> domain = domainService.newDomains(domains);
 
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{domainID}")
-                .buildAndExpand(domain).toUri();
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .buildAndExpand(domain)
+                .toUri();
+
+//                .path("/{domainID}")
+//                .buildAndExpand(domain).toUri();
         return ResponseEntity.created(location).build();
     }
 
